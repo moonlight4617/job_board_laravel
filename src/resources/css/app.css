@@ -1,0 +1,17 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import 'micromodal';
+@import 'swiper';
+
+
+.image-box {
+    position: relative;
+}
+
+.delete {
+  color: rgb(250, 250, 250);
+    position: absolute;
+    top: 10%;
+    left: 75%;
+}

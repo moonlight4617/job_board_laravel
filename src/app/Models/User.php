@@ -2,15 +2,49 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\AppStatus;
+use App\Models\UserPictures;
+use App\Models\ContactUsers;
+use App\Models\Tag;
+use App\Notifications\User\VerifyEmail;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
+    use SoftDeletes;
+
+
+    public function appStatus()
+    {
+        return $this->hasMany(AppStatus::class, 'users_id');
+    }
+
+    public function userPictures()
+    {
+        return $this->hasMany(UserPictures::class, 'users_id');
+    }
+
+    public function ContactUsers()
+    {
+        return $this->hasMany(ContactUsers::class, 'users_id');
+        // return $this->belongsToMany(ContactUsers::class, 'contact_users', 'users_id', 'companies_id');
+    }
+
+    public function  Tags()
+    {
+        return $this->belongsToMany(Tag::class, 'tag_to_users', 'users_id', 'tags_id')->withTimestamps();
+    }
+
+    public function isFollowedBy($company): bool
+    {
+        return ContactUsers::where('users_id', $this->id)->where('companies_id', $company->id)->where('follow', true)->first() !== null;
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +55,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'catch',
+        'intro',
+        'license',
+        'career',
+        'hobby',
+        'pro_image',
+        'portfolio1',
     ];
 
     /**
@@ -41,4 +82,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmail());
+    }
 }
