@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class OccupationSeeder extends Seeder
+final class OccupationSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,44 +18,44 @@ class OccupationSeeder extends Seeder
     {
         DB::table('occupations')->insert([
             [
-                'name' => 'キッチン'
+                'name' => 'キッチン',
             ],
             [
-                'name' => 'ホール'
+                'name' => 'ホール',
             ],
             [
-                'name' => 'ブーランジェ'
+                'name' => 'ブーランジェ',
             ],
             [
-                'name' => 'バーテンダー'
+                'name' => 'バーテンダー',
             ],
             [
-                'name' => 'バリスタ'
+                'name' => 'バリスタ',
             ],
             [
-                'name' => 'パティシエ'
+                'name' => 'パティシエ',
             ],
             [
-                'name' => 'ソムリエ'
+                'name' => 'ソムリエ',
             ],
             [
-                'name' => '洗い場'
+                'name' => '洗い場',
             ],
             [
-                'name' => '配達スタッフ'
+                'name' => '配達スタッフ',
             ],
             [
-                'name' => '販売スタッフ'
+                'name' => '販売スタッフ',
             ],
             [
-                'name' => 'レセプション'
+                'name' => 'レセプション',
             ],
             [
-                'name' => '本部スタッフ'
+                'name' => '本部スタッフ',
             ],
             [
-                'name' => 'その他'
-            ]
+                'name' => 'その他',
+            ],
         ]);
     }
 }

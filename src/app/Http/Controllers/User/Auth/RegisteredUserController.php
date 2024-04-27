@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\User\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
-class RegisteredUserController extends Controller
+final class RegisteredUserController extends Controller
 {
     /**
      * Display the registration view.
@@ -26,7 +27,6 @@ class RegisteredUserController extends Controller
     /**
      * Handle an incoming registration request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -58,6 +58,7 @@ class RegisteredUserController extends Controller
         $token = $request->session()->token();
         // dd($token);
         $user = User::findOrFail(Auth::id());
+
         return view('user.auth.change-email', compact('user', 'token'));
     }
 
@@ -77,6 +78,7 @@ class RegisteredUserController extends Controller
             $user->email = $request->email;
             $user->save();
         }
+
         return redirect()->route('user.edit')->with(['message' => '会員情報更新しました', 'status' => 'info']);
     }
 }

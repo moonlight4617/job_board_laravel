@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class SendMassegeMail extends Mailable
+final class SendMassegeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -31,7 +32,7 @@ class SendMassegeMail extends Mailable
     {
         return $this->subject('jobpairに新しいメッセージが届きました')->view('emails.sendMessage')->with([
             'user' => $this->user->name,
-            'page' => $this->pages
+            'page' => $this->pages,
         ]);
     }
 }

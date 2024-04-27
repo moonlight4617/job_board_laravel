@@ -1,27 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Models\Jobs;
+use App\Jobs\NotifyApply;
+use App\Mail\AppliedMail;
+use App\Mail\ApplyMail;
 use App\Models\AppStatus;
-use App\Models\Prefecture;
+use App\Models\Jobs;
 use App\Models\Occupation;
+use App\Models\Prefecture;
 use App\Models\Tag;
 use App\Models\User;
-use App\Mail\ApplyMail;
-use App\Mail\AppliedMail;
+use Illuminate\Http\Request;
 use Illuminate\Queue\Jobs\Job;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use App\Jobs\NotifyApply;
 
-
-class JobController extends Controller
+final class JobController extends Controller
 {
     public function index()
     {
@@ -29,12 +28,14 @@ class JobController extends Controller
         $prefectures = Prefecture::all();
         $occupations = Occupation::all();
         $tags = Tag::where('subject', 1)->get();
+
         return view('user.job.index', compact(['jobs', 'prefectures', 'occupations', 'tags']));
     }
 
     public function show($id)
     {
         $job = Jobs::findOrFail($id);
+
         return view('user.job.show', compact('job'));
     }
 
@@ -45,7 +46,7 @@ class JobController extends Controller
         $company = $job->companies;
         // まだAppStatusesテーブルにデータなければ
         $app = AppStatus::where('jobs_id', $id)->where('users_id', Auth::id())->first();
-        if (!$app) {
+        if (! $app) {
             // dd($user, $company, $job, $id);
             $app = new AppStatus();
             $app->users_id = Auth::id();
@@ -70,10 +71,10 @@ class JobController extends Controller
                 // NotifyApply::dispatch($user, $company, $job, $id);
             }
         }
+
         // return view('user.job.show', compact('job'))->with(['message' => '応募しました', 'status' => 'info']);
         return redirect()->route('user.jobs.show', ['job' => $id])->with(['message' => '応募しました', 'status' => 'info']);
     }
-
 
     public function favorite(Request $request)
     {
@@ -85,7 +86,7 @@ class JobController extends Controller
         // 既にappStatusesテーブルにデータあれば
         if ($exist) {
             // まだお気に入りしてなければ
-            if (!$already_favorite) {
+            if (! $already_favorite) {
                 $exist->favorite = true;
                 $exist->save();
                 // 既にお気に入りしてれば
@@ -95,13 +96,13 @@ class JobController extends Controller
             }
             // まだappStatusesテーブルにデータなければ
         } else {
-            $favorite = new AppStatus;
+            $favorite = new AppStatus();
             $favorite->jobs_id = $job_id;
             $favorite->users_id = $user_id;
             $favorite->favorite = true;
             $favorite->save();
         }
-        return;
+
     }
 
     public function query(Request $request)
@@ -152,6 +153,7 @@ class JobController extends Controller
         $prefectures = Prefecture::all();
         $occupations = Occupation::all();
         $tags = Tag::where('subject', 1)->get();
+
         return view('user.job.search', compact(['jobs', 'prefectures', 'occupations', 'tags', 'requestPrefs', 'requestOccupations', 'requestLowSalary', 'requestTags', 'requestSearch']));
     }
 
@@ -160,6 +162,7 @@ class JobController extends Controller
         $user = User::findOrFail(Auth::id());
         $jobsId = $user->appStatus()->where('favorite', 1)->pluck('jobs_id');
         $jobs = Jobs::whereIn('id', $jobsId)->where('rec_status', 0)->paginate(50);
+
         return view('user.job.favoriteIndex', compact('jobs'));
     }
 
@@ -168,6 +171,7 @@ class JobController extends Controller
         $user = User::findOrFail(Auth::id());
         $jobsId = $user->appStatus()->where('app_flag', 1)->pluck('jobs_id');
         $jobs = Jobs::whereIn('id', $jobsId)->where('rec_status', 0)->paginate(50);
+
         return view('user.job.appliedIndex', compact('jobs'));
     }
 }

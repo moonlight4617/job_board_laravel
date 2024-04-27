@@ -1,25 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Companies;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Models\UserPictures;
-use App\Models\User;
 use App\Models\Companies;
 use App\Models\ContactUsers;
 use App\Models\Tag;
+use App\Models\User;
+use App\Models\UserPictures;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
-
-
-class JobSeeker extends Controller
+final class JobSeeker extends Controller
 {
     public function index()
     {
         $users = User::where('deleted_at', null)->with('userPictures')->paginate(50);
         $tags = Tag::where('subject', 0)->get();
+
         return view('company.user.index', compact(['users', 'tags']));
     }
 
@@ -28,6 +29,7 @@ class JobSeeker extends Controller
         $user = User::findOrFail($id);
         $pictures = UserPictures::where('users_id', '=', $id)->get();
         $tags = $user->Tags;
+
         return view('company.user.show', compact('user', 'pictures', 'tags'));
     }
 
@@ -41,7 +43,7 @@ class JobSeeker extends Controller
         // 既にcontactUsersテーブルにデータあれば
         if ($exist) {
             // まだフォローしてなければ
-            if (!$already_followed) {
+            if (! $already_followed) {
                 $exist->follow = true;
                 $exist->save();
                 // 既にフォローしてれば
@@ -51,13 +53,13 @@ class JobSeeker extends Controller
             }
             // まだcontactUsersテーブルにデータなければ
         } else {
-            $contactUsers = new ContactUsers;
+            $contactUsers = new ContactUsers();
             $contactUsers->users_id = $user_id;
             $contactUsers->companies_id = $company_id;
             $contactUsers->follow = true;
             $contactUsers->save();
         }
-        return;
+
     }
 
     public function followIndex()
@@ -73,6 +75,7 @@ class JobSeeker extends Controller
             $users = null;
         }
         $tags = Tag::where('subject', 0)->get();
+
         return view('company.user.followIndex', compact(['users', 'tags']));
     }
 
@@ -87,6 +90,7 @@ class JobSeeker extends Controller
         }
 
         $tags = Tag::where('subject', 0)->get();
+
         return view('company.user.index', compact(['users', 'tags', 'requestTags']));
     }
 
@@ -107,6 +111,7 @@ class JobSeeker extends Controller
         }
 
         $tags = Tag::where('subject', 0)->get();
+
         return view('company.user.followIndex', compact(['users', 'tags', 'requestTags']));
     }
 }

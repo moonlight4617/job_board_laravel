@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
 use App\Models\Jobs;
 use App\Models\Tag;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
-class JobTagSeeder extends Seeder
+final class JobTagSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -55,7 +56,7 @@ class JobTagSeeder extends Seeder
             [
                 'jobs_id' => $job3Id,
                 'tags_id' => $tag5Id,
-            ]
+            ],
             // [
             //     'jobs_id' => '1',
             //     'tags_id' => '10',

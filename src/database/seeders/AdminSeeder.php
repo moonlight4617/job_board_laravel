@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
-class AdminSeeder extends Seeder
+final class AdminSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -19,7 +21,7 @@ class AdminSeeder extends Seeder
             'name' => 'Admin1',
             'email' => 'admin1@sample.com',
             'password' => Hash::make('12345678'),
-            'created_at' => '2022/02/06 17:05:00'
+            'created_at' => '2022/02/06 17:05:00',
         ]);
     }
 }

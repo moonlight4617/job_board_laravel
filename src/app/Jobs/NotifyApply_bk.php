@@ -1,26 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
+use App\Mail\AppliedMail;
+use App\Mail\ApplyMail;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\AppliedMail;
-use App\Mail\ApplyMail;
 
-class NotifyApply implements ShouldQueue
+final class NotifyApply implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $job;
+
     public $pages;
+
     public $user;
+
     public $company;
+
     public $id;
+
     /**
      * Create a new job instance.
      *
@@ -43,6 +49,6 @@ class NotifyApply implements ShouldQueue
     {
         // Mail::to($user->email)->send(new ApplyMail($job, route('user.jobs.show', ['job' => $id])));
         // Mail::to($company->email)->send(new AppliedMail($job, route('company.jobs.show', ['job' => $id])));
-        return;
+
     }
 }

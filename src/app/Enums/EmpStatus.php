@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 use BenSampo\Enum\Enum;
@@ -11,12 +13,18 @@ use BenSampo\Enum\Enum;
  */
 final class EmpStatus extends Enum
 {
-    const FULLTIME =   0;
-    const TEMP =   1;
+    const FULLTIME = 0;
+
+    const TEMP = 1;
+
     const CONTRACT = 2;
+
     const OUTSOURCING = 3;
+
     const PARTTIME = 4;
+
     const COMMISSIONED = 5;
+
     const OTHERS = 6;
 
     public static function getDescription($value): string

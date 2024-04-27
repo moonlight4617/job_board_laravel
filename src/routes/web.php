@@ -1,12 +1,13 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\User\UserController;
+declare(strict_types=1);
+
+use App\Http\Controllers\Top;
+use App\Http\Controllers\User\Company;
 use App\Http\Controllers\User\JobController;
 use App\Http\Controllers\User\MessageController;
-use App\Http\Controllers\User\Company;
-use App\Http\Controllers\Top;
-
+use App\Http\Controllers\User\UserController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +24,6 @@ Route::get('/', function () {
     return view('user.welcome');
 });
 // Route::get('/', [Top::class, 'test'])->name('top');
-
 
 Route::get('/dashboard', function () {
     return view('user.dashboard');
@@ -46,7 +46,6 @@ Route::post('/jobs/{job}/application', [JobController::class, 'application'])->m
 
 // 企業詳細
 Route::get('/user/company/{company}', Company::class)->name('company.show');
-
 
 // 応募済み一覧
 Route::get('appliedIndex', [JobController::class, 'appliedIndex'])->middleware(['auth:users', 'ensure.user'])->name('jobs.applied');

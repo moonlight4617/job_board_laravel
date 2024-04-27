@@ -1,28 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\UserPictures;
+use App\Http\Requests\UploadImageRequest;
 use App\Models\Tag;
 use App\Models\TagToUser;
+use App\Models\User;
+use App\Models\UserPictures;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use Illuminate\Validation\Rule;
-use InterventionImage;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\UploadImageRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules;
+use InterventionImage;
 
-
-
-class UsersController extends Controller
+final class UsersController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth:admin');
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -31,6 +32,7 @@ class UsersController extends Controller
     public function index()
     {
         $users = User::select('id', 'name', 'email', 'created_at', 'updated_at')->paginate(50);
+
         // dd($companies);
         return view('admin.user.index', compact('users'));
     }
@@ -43,13 +45,14 @@ class UsersController extends Controller
     public function create()
     {
         $tags = Tag::where('subject', '=', '0')->get();
+
         return view('admin.user.create', compact('tags'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(UploadImageRequest $request)
@@ -117,7 +120,7 @@ class UsersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -125,13 +128,14 @@ class UsersController extends Controller
         $user = User::findOrFail($id);
         $tags = $user->Tags;
         $pictures = UserPictures::where('users_id', '=', $id)->get();
+
         return view('admin.user.show', compact('user', 'tags', 'pictures'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -147,7 +151,7 @@ class UsersController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(UploadImageRequest $request, $id)
@@ -193,12 +197,12 @@ class UsersController extends Controller
         if ($requestTags && $userTags) {
             foreach ($userTags as $tag) {
                 // if (!$requestTags->contains($tag)) {
-                if (!in_array($tag, $requestTags)) {
+                if (! in_array($tag, $requestTags)) {
                     $user->tags()->detach($tag);
                 }
             }
             foreach ($requestTags as $tag) {
-                if (!$userTags->contains($tag)) {
+                if (! $userTags->contains($tag)) {
                     $user->tags()->attach($tag);
                 }
             }
@@ -242,12 +246,13 @@ class UsersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         User::findOrFail($id)->delete();
+
         return redirect()->route('admin.users.index')->with(['message' => 'ユーザーを削除しました。', 'status' => 'alert']);
     }
 

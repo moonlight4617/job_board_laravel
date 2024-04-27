@@ -1,32 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
-
-class EnsureUser
+final class EnsureUser
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     * @param Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse) $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handle(Request $request, Closure $next)
     {
         $id = $request->route()->parameter('user');
-        if (!is_null($id)) {
+        if (! is_null($id)) {
             $userId = User::findOrFail($id)->id;
             if ($userId !== Auth::id()) {
                 abort(404); // 404画面表示 }
             }
+
             return $next($request);
         }
+
         return $next($request);
     }
 }

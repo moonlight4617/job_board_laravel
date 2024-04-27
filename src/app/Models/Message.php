@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\ContactUsers;
 
-
-class Message extends Model
+final class Message extends Model
 {
     use HasFactory;
 
@@ -20,6 +20,6 @@ class Message extends Model
         'contact_users_id',
         'sent_time',
         'sent_from',
-        'body'
+        'body',
     ];
 }

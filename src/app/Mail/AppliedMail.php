@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class AppliedMail extends Mailable
+final class AppliedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -31,7 +32,7 @@ class AppliedMail extends Mailable
     {
         return $this->subject('jobpairで求人応募がありました')->view('emails.applied')->with([
             'job' => $this->job->job_name,
-            'page' => $this->pages
+            'page' => $this->pages,
         ]);
     }
 }
