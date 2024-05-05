@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Companies;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UploadImageRequest;
 use App\Models\Companies;
 use Illuminate\Http\Request;
-use App\Models\Jobs;
 use Illuminate\Support\Facades\Auth;
-use InterventionImage;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\UploadImageRequest;
+use InterventionImage;
 
-class CompanyController extends Controller
+final class CompanyController extends Controller
 {
     public function __construct()
     {
@@ -30,7 +31,7 @@ class CompanyController extends Controller
             'tel' => ['nullable', 'string'],
             'post_code' => ['nullable', 'integer'],
             'address' => ['nullable', 'string', 'max:255'],
-            'homepage' => ['nullable', 'string', 'max:255']
+            'homepage' => ['nullable', 'string', 'max:255'],
         ]);
 
         $company = Companies::findOrFail(Auth::id());
@@ -84,12 +85,14 @@ class CompanyController extends Controller
     public function show(Request $request, $id)
     {
         $company = Companies::findOrFail($id);
+
         return view('company.mypage.show', compact('company'));
     }
 
     public function edit($id)
     {
         $company = Companies::findOrFail($id);
+
         return view('company.mypage.edit', compact('company'));
     }
 
@@ -101,7 +104,7 @@ class CompanyController extends Controller
             'tel' => ['nullable', 'string'],
             'post_code' => ['nullable', 'integer'],
             'address' => ['nullable', 'string', 'max:255'],
-            'homepage' => ['nullable', 'string', 'max:255']
+            'homepage' => ['nullable', 'string', 'max:255'],
         ]);
 
         $company = Companies::findOrFail($id);
@@ -168,6 +171,7 @@ class CompanyController extends Controller
     public function destroy($id)
     {
         Companies::findOrFail($id)->delete();
+
         return redirect()->route('company.register')->with(['message' => '企業情報を削除しました。', 'status' => 'alert']);
     }
 }

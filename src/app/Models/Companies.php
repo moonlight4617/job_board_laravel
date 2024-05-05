@@ -1,20 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Jobs;
-use App\Models\ContactUsers;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\Company\VerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-
-
-class Companies extends Authenticatable implements MustVerifyEmail
+final class Companies extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
     use SoftDeletes;
@@ -41,7 +38,7 @@ class Companies extends Authenticatable implements MustVerifyEmail
         'tel',
         'post_code',
         'address',
-        'homepage'
+        'homepage',
     ];
 
     /**

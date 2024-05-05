@@ -1,27 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Companies;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Jobs\SendMessageMail;
+use App\Models\Companies;
 use App\Models\ContactUsers;
 use App\Models\Message;
 use App\Models\User;
-use App\Models\AppStatus;
-use App\Models\Companies;
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 // use App\Mail\SendMassegeMail;
-use App\Jobs\SendMessageMail;
+use Illuminate\Support\Facades\Mail;
 
-
-class MessageController extends Controller
+final class MessageController extends Controller
 {
     public function index()
     {
         $users = ContactUsers::where('companies_id', Auth::id())->with('users')->with('messages')->paginate(50);
         $jobs = Companies::findOrFail(Auth::id())->jobs()->where('rec_status', '<>', '2')->get();
+
         return view('company.message.index', compact(['users', 'jobs']));
     }
 
@@ -33,12 +34,13 @@ class MessageController extends Controller
         } else {
             $contactUsers = ContactUsers::create([
                 'companies_id' => Auth::id(),
-                'users_id' => $id
+                'users_id' => $id,
             ]);
             $contactUsersId = $contactUsers;
             $messages = null;
         }
         $user = User::findOrFail($id);
+
         return view('company.message.show', compact(['contactUsersId', 'messages', 'user']));
     }
 
@@ -57,6 +59,5 @@ class MessageController extends Controller
         // 同期的にメール送信。使う場合は上部のuseコメントアウト外す。
         // Mail::to($user->email)->send(new SendMassegeMail($company, route('user.message.show', ['company' => $company->id])));
 
-        return;
     }
 }

@@ -1,24 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
+use App\Notifications\User\VerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\AppStatus;
-use App\Models\UserPictures;
-use App\Models\ContactUsers;
-use App\Models\Tag;
-use App\Notifications\User\VerifyEmail;
 
-class User extends Authenticatable implements MustVerifyEmail
+final class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
     use SoftDeletes;
-
 
     public function appStatus()
     {
@@ -36,7 +33,7 @@ class User extends Authenticatable implements MustVerifyEmail
         // return $this->belongsToMany(ContactUsers::class, 'contact_users', 'users_id', 'companies_id');
     }
 
-    public function  Tags()
+    public function Tags()
     {
         return $this->belongsToMany(Tag::class, 'tag_to_users', 'users_id', 'tags_id')->withTimestamps();
     }

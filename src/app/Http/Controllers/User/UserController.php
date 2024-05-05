@@ -1,26 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\User;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\UserPictures;
+use App\Http\Requests\UploadImageRequest;
 use App\Models\Tag;
 use App\Models\TagToUser;
+use App\Models\User;
+use App\Models\UserPictures;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use InterventionImage;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\UploadImageRequest;
+use InterventionImage;
 
-
-class UserController extends Controller
+final class UserController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth:users');
     }
-
 
     /**
      * Display a listing of the resource.
@@ -45,7 +45,6 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -99,7 +98,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -107,13 +106,14 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $pictures = UserPictures::where('users_id', '=', $id)->get();
         $tags = $user->Tags;
+
         return view('user.mypage.show', compact('user', 'pictures', 'tags'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -122,14 +122,15 @@ class UserController extends Controller
         $pictures = UserPictures::where('users_id', '=', $id)->get();
         $tags = Tag::where('subject', '=', '0')->get();
         $userTags = $user->Tags;
+
         return view('user.mypage.edit', compact('user', 'pictures', 'tags', 'userTags'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(UploadImageRequest $request, $id)
@@ -169,12 +170,12 @@ class UserController extends Controller
         $userTags = TagToUser::where('users_id', $id)->pluck('tags_id');
         if ($requestTags && $userTags) {
             foreach ($userTags as $tag) {
-                if (!in_array($tag, $requestTags)) {
+                if (! in_array($tag, $requestTags)) {
                     $user->tags()->detach($tag);
                 }
             }
             foreach ($requestTags as $tag) {
-                if (!$userTags->contains($tag)) {
+                if (! $userTags->contains($tag)) {
                     $user->tags()->attach($tag);
                 }
             }
@@ -217,15 +218,15 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         User::findOrFail($id)->delete();
+
         return redirect()->route('user.register')->with(['message' => 'ユーザー情報を削除しました。', 'status' => 'alert']);
     }
-
 
     public function pictureAdd(UploadImageRequest $request)
     {
@@ -238,7 +239,7 @@ class UserController extends Controller
 
         // 新たにUserPicturesに画像登録
         UserPictures::create(['users_id' => Auth::id(), 'filename' => $portfolioToStore]);
-        return;
+
     }
 
     public function pictureDestroy(Request $request)
@@ -250,7 +251,7 @@ class UserController extends Controller
             Storage::delete($filePath);
         }
         $picture->delete();
-        return;
+
     }
 
     public function test()

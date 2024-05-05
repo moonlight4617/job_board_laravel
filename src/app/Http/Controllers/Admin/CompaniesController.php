@@ -1,26 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\User\Company;
-use Illuminate\Http\Request;
-use App\Models\Companies;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use Illuminate\Validation\Rule;
 use App\Http\Requests\UploadImageRequest;
-use InterventionImage;
+use App\Models\Companies;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules;
+use InterventionImage;
 
-
-class CompaniesController extends Controller
+final class CompaniesController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth:admin');
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -29,6 +29,7 @@ class CompaniesController extends Controller
     public function index()
     {
         $companies = Companies::select('id', 'name', 'email', 'created_at', 'updated_at')->paginate(50);
+
         return view('admin.company.index', compact('companies'));
     }
 
@@ -47,7 +48,6 @@ class CompaniesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
     public function store(UploadImageRequest $request)
     {
         $request->validate([
@@ -58,7 +58,7 @@ class CompaniesController extends Controller
             'tel' => ['nullable', 'string'],
             'post_code' => ['nullable', 'integer'],
             'address' => ['nullable', 'string', 'max:255'],
-            'homepage' => ['nullable', 'string', 'max:255']
+            'homepage' => ['nullable', 'string', 'max:255'],
         ]);
 
         $company = Companies::create([
@@ -69,7 +69,7 @@ class CompaniesController extends Controller
             'tel' => $request->tel,
             'post_code' => $request->post_code,
             'address' => $request->address,
-            'homepage' => $request->homepage
+            'homepage' => $request->homepage,
         ]);
 
         // image1,2,3がparamsにあれば、一旦削除した後に、登録
@@ -116,32 +116,34 @@ class CompaniesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
         $company = Companies::findOrFail($id);
+
         return view('admin.company.show', compact('company'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
         $company = Companies::findOrFail($id);
+
         return view('admin.company.edit', compact('company'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(UploadImageRequest $request, $id)
@@ -155,7 +157,7 @@ class CompaniesController extends Controller
             'tel' => ['nullable', 'string'],
             'post_code' => ['nullable', 'integer'],
             'address' => ['nullable', 'string', 'max:255'],
-            'homepage' => ['nullable', 'string', 'max:255']
+            'homepage' => ['nullable', 'string', 'max:255'],
         ]);
 
         $company->name = $request->name;
@@ -225,12 +227,13 @@ class CompaniesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         Companies::findOrFail($id)->delete();
+
         return redirect()->route('admin.companies.index')->with(['message' => '企業を削除しました。', 'status' => 'alert']);
     }
 

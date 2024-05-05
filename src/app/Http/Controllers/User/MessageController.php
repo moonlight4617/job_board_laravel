@@ -1,23 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendMessageMail;
+use App\Models\AppStatus;
+use App\Models\Companies;
+use App\Models\ContactUsers;
+use App\Models\Jobs;
+use App\Models\Message;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Message;
-use App\Models\ContactUsers;
-use App\Models\Companies;
-use App\Models\User;
-use App\Models\Jobs;
-use App\Models\AppStatus;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Mail;
 //use App\Mail\SendMassegeMail;
-use App\Jobs\SendMessageMail;
+use Illuminate\Support\Facades\Mail;
 
-
-class MessageController extends Controller
+final class MessageController extends Controller
 {
     public function index()
     {
@@ -41,11 +42,12 @@ class MessageController extends Controller
             $contactUsersId = ContactUsers::create([
                 'users_id' => Auth::id(),
                 'companies_id' => $id,
-                'follow' => 0
+                'follow' => 0,
             ]);
         }
         $messages = Message::whereIn('contact_users_id', $contactUsersId)->orderBy('sent_time', 'asc')->get();
         $company = Companies::findOrFail($id);
+
         return view('user.message.show', compact(['contactUsersId', 'messages', 'company']));
     }
 
@@ -64,6 +66,5 @@ class MessageController extends Controller
         // 同期的にメール送信。使う場合は上部のuseコメントアウト外す。
         // Mail::to($company->email)->send(new SendMassegeMail($user, route('company.message.show', ['user' => $user->id])));
 
-        return;
     }
 }

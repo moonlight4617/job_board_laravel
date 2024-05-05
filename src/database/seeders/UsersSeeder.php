@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
-class UsersSeeder extends Seeder
+final class UsersSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -48,7 +50,7 @@ class UsersSeeder extends Seeder
                 'license' => '英検３級',
                 'career' => '高卒',
                 'hobby' => '野球',
-            ]
+            ],
         ]);
     }
 }

@@ -1,24 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\User\Company;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Message;
-use App\Models\ContactUsers;
-use App\Models\Companies;
-use App\Models\User;
-use App\Models\Jobs;
 use App\Models\AppStatus;
+use App\Models\Companies;
+use App\Models\ContactUsers;
+use App\Models\Jobs;
+use App\Models\Message;
+use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\Request;
+
 //use App\Mail\SendMassegeMail;
-use App\Jobs\SendMessageMail;
 
-
-class MessageController extends Controller
+final class MessageController extends Controller
 {
     public function userMessageIndex($id)
     {
@@ -34,9 +32,9 @@ class MessageController extends Controller
     {
         $users = ContactUsers::where('companies_id', $id)->with('users')->with('messages')->paginate(50);
         $jobs = Companies::findOrFail($id)->jobs()->where('rec_status', '<>', '2')->get();
+
         return view('admin.message.index', compact(['users', 'jobs']));
     }
-
 
     public function show($id, Request $request)
     {
@@ -50,6 +48,7 @@ class MessageController extends Controller
             return back()->with(['message' => 'まだチャットルームがありません', 'status' => 'alert']);
         }
         $messages = Message::whereIn('contact_users_id', $contactUsersId)->orderBy('sent_time', 'asc')->get();
+
         return view('admin.message.show', compact(['contactUsersId', 'messages', 'company', 'user']));
     }
 
@@ -61,6 +60,7 @@ class MessageController extends Controller
         foreach ($request->messages as $messageId) {
             Message::findOrFail($messageId)->delete();
         }
+
         // $user
         // $company
         return view('admin.message.show', compact(['contactUsersId', 'messages', 'company', 'user']))->with(['message' => 'メッセージを削除しました', 'status' => 'info']);

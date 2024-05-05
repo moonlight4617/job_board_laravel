@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Notifications\User;
 
+use Closure;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Carbon;
@@ -11,21 +13,21 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\URL;
 
-class VerifyEmail extends Notification
+final class VerifyEmail extends Notification
 {
     use Queueable;
 
     /**
      * The callback that should be used to create the verify email URL.
      *
-     * @var \Closure|null
+     * @var Closure|null
      */
     public static $createUrlCallback;
 
     /**
      * The callback that should be used to build the mail message.
      *
-     * @var \Closure|null
+     * @var Closure|null
      */
     public static $toMailCallback;
 
@@ -42,7 +44,6 @@ class VerifyEmail extends Notification
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
      * @return array
      */
     public function via($notifiable)
@@ -53,15 +54,14 @@ class VerifyEmail extends Notification
     /**
      * Build the mail representation of the notification.
      *
-     * @param  mixed  $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable)
     {
         $verificationUrl = $this->verificationUrl($notifiable);
 
-        if (static::$toMailCallback) {
-            return call_user_func(static::$toMailCallback, $notifiable, $verificationUrl);
+        if (self::$toMailCallback) {
+            return call_user_func(self::$toMailCallback, $notifiable, $verificationUrl);
         }
 
         return $this->buildMailMessage($verificationUrl);
@@ -70,12 +70,12 @@ class VerifyEmail extends Notification
     /**
      * Get the verify email notification mail message for the given URL.
      *
-     * @param  string  $url
+     * @param string $url
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     protected function buildMailMessage($url)
     {
-        return (new MailMessage)
+        return (new MailMessage())
             ->subject(Lang::get('Verify Email Address'))
             ->line(Lang::get('Please click the button below to verify your email address.'))
             ->action(Lang::get('Verify Email Address'), $url)
@@ -85,13 +85,12 @@ class VerifyEmail extends Notification
     /**
      * Get the verification URL for the given notifiable.
      *
-     * @param  mixed  $notifiable
      * @return string
      */
     protected function verificationUrl($notifiable)
     {
-        if (static::$createUrlCallback) {
-            return call_user_func(static::$createUrlCallback, $notifiable);
+        if (self::$createUrlCallback) {
+            return call_user_func(self::$createUrlCallback, $notifiable);
         }
 
         return URL::temporarySignedRoute(
@@ -107,29 +106,28 @@ class VerifyEmail extends Notification
     /**
      * Set a callback that should be used when creating the email verification URL.
      *
-     * @param  \Closure  $callback
+     * @param Closure $callback
      * @return void
      */
     public static function createUrlUsing($callback)
     {
-        static::$createUrlCallback = $callback;
+        self::$createUrlCallback = $callback;
     }
 
     /**
      * Set a callback that should be used when building the notification mail message.
      *
-     * @param  \Closure  $callback
+     * @param Closure $callback
      * @return void
      */
     public static function toMailUsing($callback)
     {
-        static::$toMailCallback = $callback;
+        self::$toMailCallback = $callback;
     }
 
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed  $notifiable
      * @return array
      */
     public function toArray($notifiable)

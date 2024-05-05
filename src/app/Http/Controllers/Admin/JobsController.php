@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Jobs;
-use App\Models\Prefecture;
 use App\Models\Occupation;
+use App\Models\Prefecture;
 use App\Models\Tag;
+use Illuminate\Http\Request;
 
-
-class JobsController extends Controller
+final class JobsController extends Controller
 {
     public function __construct()
     {
@@ -23,12 +24,14 @@ class JobsController extends Controller
         $prefectures = Prefecture::all();
         $occupations = Occupation::all();
         $tags = Tag::where('subject', 1)->get();
+
         return view('admin.job.index', compact(['jobs', 'prefectures', 'occupations', 'tags']));
     }
 
     public function show($id)
     {
         $job = Jobs::findOrFail($id);
+
         return view('admin.job.show', compact('job'));
     }
 
@@ -79,6 +82,7 @@ class JobsController extends Controller
         $prefectures = Prefecture::all();
         $occupations = Occupation::all();
         $tags = Tag::where('subject', 1)->get();
+
         return view('admin.job.search', compact(['jobs', 'prefectures', 'occupations', 'tags', 'requestPrefs', 'requestOccupations', 'requestLowSalary', 'requestTags', 'requestSearch']));
     }
 }

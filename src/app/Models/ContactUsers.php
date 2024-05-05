@@ -1,15 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
-use App\Models\Companies;
-use App\Models\Message;
 
-
-class ContactUsers extends Model
+final class ContactUsers extends Model
 {
     use HasFactory;
 
@@ -31,6 +29,6 @@ class ContactUsers extends Model
     protected $fillable = [
         'users_id',
         'companies_id',
-        'follow'
+        'follow',
     ];
 }

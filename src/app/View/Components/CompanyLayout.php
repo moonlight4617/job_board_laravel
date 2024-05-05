@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\View\Components;
 
+use Closure;
 use Illuminate\View\Component;
 
-class CompanyLayout extends Component
+final class CompanyLayout extends Component
 {
     /**
      * Create a new component instance.
@@ -19,7 +22,7 @@ class CompanyLayout extends Component
     /**
      * Get the view / contents that represent the component.
      *
-     * @return \Illuminate\Contracts\View\View|\Closure|string
+     * @return \Illuminate\Contracts\View\View|Closure|string
      */
     public function render()
     {

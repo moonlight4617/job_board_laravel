@@ -1,17 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Tag;
+use Illuminate\Http\Request;
 
-class TagsController extends Controller
+final class TagsController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth:admin');
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -22,13 +25,13 @@ class TagsController extends Controller
         // $tags = Tag::select('id', 'tag_name', 'subject');
         $userTags = Tag::where('subject', 0)->get();
         $jobTags = Tag::where('subject', 1)->get();
+
         return view('admin.tags.index', compact('userTags', 'jobTags'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -39,7 +42,7 @@ class TagsController extends Controller
         ]);
         Tag::create([
             'tag_name' => $request->tag_name,
-            'subject' => $request->subject
+            'subject' => $request->subject,
         ]);
 
         return redirect()->route('admin.tags.index')->with(['message' => 'タグを新規登録しました。', 'status' => 'info']);
@@ -48,7 +51,6 @@ class TagsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
@@ -57,9 +59,10 @@ class TagsController extends Controller
             foreach ($request->tags as $tag) {
                 $tag = Tag::findOrFail($tag)->delete();
             }
+
             return redirect()->route('admin.tags.index')->with(['message' => 'タグを削除しました。', 'status' => 'info']);
         } else {
             return back()->with(['message' => '削除するタグを選択してください', 'status' => 'alert']);
-        };
+        }
     }
 }

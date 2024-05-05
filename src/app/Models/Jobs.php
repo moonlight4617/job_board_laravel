@@ -1,18 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
+use App\Enums\EmpStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Companies;
-use App\Models\AppStatus;
-use App\Models\TagToJob;
-use App\Models\Tag;
-use App\Models\Prefecture;
-use App\Models\Occupation;
-use App\Enums\EmpStatus;
 
-class Jobs extends Model
+final class Jobs extends Model
 {
     use HasFactory;
 
@@ -20,12 +16,13 @@ class Jobs extends Model
     {
         return $this->belongsTo(Companies::class);
     }
+
     public function appStatus()
     {
         return $this->hasMany(AppStatus::class);
     }
 
-    public function  TagToJob()
+    public function TagToJob()
     {
         return $this->hasMany(TagToJob::class, 'jobs_id');
     }
@@ -45,7 +42,7 @@ class Jobs extends Model
         'rec_status',
         'image1',
         'image2',
-        'image3'
+        'image3',
     ];
 
     public function isLikedBy($user): bool
@@ -58,22 +55,22 @@ class Jobs extends Model
         return AppStatus::where('users_id', $user->id)->where('jobs_id', $this->id)->where('app_flag', true)->first() !== null;
     }
 
-    public function  Tags()
+    public function Tags()
     {
         return $this->belongsToMany(Tag::class, 'tag_to_jobs', 'jobs_id', 'tags_id');
     }
 
-    public function  Prefectures()
+    public function Prefectures()
     {
         return $this->belongsToMany(Prefecture::class, 'job_locations', 'jobs_id', 'prefectures_id');
     }
 
-    public function  occupations()
+    public function occupations()
     {
         return $this->belongsToMany(Occupation::class, 'job_occupations', 'jobs_id', 'occupations_id');
     }
 
-    public function  empStatus()
+    public function empStatus()
     {
         return EmpStatus::getDescription($this->emp_status);
     }

@@ -1,6 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+declare(strict_types=1);
+
 use App\Http\Controllers\Companies\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Companies\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Companies\Auth\EmailVerificationNotificationController;
@@ -9,10 +10,11 @@ use App\Http\Controllers\Companies\Auth\NewPasswordController;
 use App\Http\Controllers\Companies\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Companies\Auth\RegisteredUserController;
 use App\Http\Controllers\Companies\Auth\VerifyEmailController;
-use App\Http\Controllers\Companies\JobsController;
 use App\Http\Controllers\Companies\CompanyController;
+use App\Http\Controllers\Companies\JobsController;
 use App\Http\Controllers\Companies\JobSeeker;
 use App\Http\Controllers\Companies\MessageController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,57 +37,57 @@ use App\Http\Controllers\Companies\MessageController;
 
 // 認証
 Route::get('/register', [RegisteredUserController::class, 'create'])
-  ->middleware('guest')
-  ->name('register');
+    ->middleware('guest')
+    ->name('register');
 
 Route::post('/register', [RegisteredUserController::class, 'store'])
-  ->middleware('guest');
+    ->middleware('guest');
 
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])
-  ->middleware('guest')
-  ->name('login');
+    ->middleware('guest')
+    ->name('login');
 
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])
-  ->middleware('guest');
+    ->middleware('guest');
 
 Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])
-  ->middleware('guest')
-  ->name('password.request');
+    ->middleware('guest')
+    ->name('password.request');
 
 Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
-  ->middleware('guest')
-  ->name('password.email');
+    ->middleware('guest')
+    ->name('password.email');
 
 Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
-  ->middleware('guest')
-  ->name('password.reset');
+    ->middleware('guest')
+    ->name('password.reset');
 
 Route::post('/reset-password', [NewPasswordController::class, 'store'])
-  ->middleware('guest')
-  ->name('password.update');
+    ->middleware('guest')
+    ->name('password.update');
 
 Route::get('/verify-email', [EmailVerificationPromptController::class, '__invoke'])
-  ->middleware('auth:companies')
-  ->name('verification.notice');
+    ->middleware('auth:companies')
+    ->name('verification.notice');
 
 Route::get('/verify-email/{id}/{hash}', [verifyEmailController::class, '__invoke'])
-  ->middleware(['auth:companies', 'signed', 'throttle:6,1'])
-  ->name('verification.verify');
+    ->middleware(['auth:companies', 'signed', 'throttle:6,1'])
+    ->name('verification.verify');
 
 Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-  ->middleware(['auth:companies', 'throttle:6,1'])
-  ->name('verification.send');
+    ->middleware(['auth:companies', 'throttle:6,1'])
+    ->name('verification.send');
 
 Route::get('/confirm-password', [ConfirmablePasswordController::class, 'show'])
-  ->middleware('auth:companies')
-  ->name('password.confirm');
+    ->middleware('auth:companies')
+    ->name('password.confirm');
 
 Route::post('/confirm-password', [ConfirmablePasswordController::class, 'store'])
-  ->middleware('auth:companies');
+    ->middleware('auth:companies');
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-  ->middleware('auth:companies')
-  ->name('logout');
+    ->middleware('auth:companies')
+    ->name('logout');
 
 // 求人
 Route::get('/jobs', [JobsController::class, 'index'])->middleware(['auth:companies'])->name('jobs.index');
@@ -139,8 +141,7 @@ Route::post('/messages/{user}/post', [MessageController::class, 'post'])->middle
 Route::get('/messages/{user}', [MessageController::class, 'show'])->middleware(['auth:companies'])->name('message.show');
 // Route::get('/messages/{user}', [MessageController::class, 'show'])->middleware(['auth:companies', 'verified'])->name('message.show');
 
-
 // ユーザーとしてログイン
 Route::get('/loginToUser', [AuthenticatedSessionController::class, 'loginToUser'])
-  ->middleware('auth:companies')
-  ->name('loginToUser');
+    ->middleware('auth:companies')
+    ->name('loginToUser');
