@@ -20,7 +20,7 @@ final class EnsureUser
     public function handle(Request $request, Closure $next)
     {
         $id = $request->route()->parameter('user');
-        if (! is_null($id)) {
+        if (!is_null($id)) {
             $userId = User::findOrFail($id)->id;
             if ($userId !== Auth::id()) {
                 abort(404); // 404画面表示 }

@@ -27,7 +27,7 @@ final class UsersController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -40,7 +40,7 @@ final class UsersController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -52,8 +52,8 @@ final class UsersController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param \App\Http\Requests\UploadImageRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(UploadImageRequest $request)
     {
@@ -121,7 +121,7 @@ final class UsersController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function show($id)
     {
@@ -136,7 +136,7 @@ final class UsersController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function edit($id)
     {
@@ -151,8 +151,9 @@ final class UsersController extends Controller
     /**
      * Update the specified resource in storage.
      *
+     * @param \App\Http\Requests\UploadImageRequest $request
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UploadImageRequest $request, $id)
     {
@@ -194,15 +195,15 @@ final class UsersController extends Controller
         // タグを登録から外した場合
         $requestTags = $request->tag;
         $userTags = TagToUser::where('users_id', $id)->pluck('tags_id');
-        if ($requestTags && $userTags) {
+        if ($requestTags && $userTags->isNotEmpty()) {
             foreach ($userTags as $tag) {
                 // if (!$requestTags->contains($tag)) {
-                if (! in_array($tag, $requestTags)) {
+                if (!in_array($tag, $requestTags)) {
                     $user->tags()->detach($tag);
                 }
             }
             foreach ($requestTags as $tag) {
-                if (! $userTags->contains($tag)) {
+                if (!$userTags->contains($tag)) {
                     $user->tags()->attach($tag);
                 }
             }
@@ -210,7 +211,7 @@ final class UsersController extends Controller
             foreach ($requestTags as $tag) {
                 $user->tags()->attach($tag);
             }
-        } elseif ($userTags) {
+        } elseif ($userTags->isNotEmpty()) {
             $user->tags()->detach();
         }
 
@@ -247,7 +248,7 @@ final class UsersController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {

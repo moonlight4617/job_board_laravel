@@ -12,6 +12,10 @@ final class SendMassegeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $user;
+
+    public $pages;
+
     /**
      * Create a new message instance.
      *

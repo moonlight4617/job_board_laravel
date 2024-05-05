@@ -43,7 +43,7 @@ final class JobSeeker extends Controller
         // 既にcontactUsersテーブルにデータあれば
         if ($exist) {
             // まだフォローしてなければ
-            if (! $already_followed) {
+            if (!$already_followed) {
                 $exist->follow = true;
                 $exist->save();
                 // 既にフォローしてれば
@@ -59,7 +59,6 @@ final class JobSeeker extends Controller
             $contactUsers->follow = true;
             $contactUsers->save();
         }
-
     }
 
     public function followIndex()
@@ -98,6 +97,8 @@ final class JobSeeker extends Controller
     {
         $requestTags = $request->tags;
         $followUsers = Companies::findOrFail(Auth::id())->ContactUsers->where('follow', 1);
+
+        $usersId = [];
         foreach ($followUsers as $user) {
             $usersId[] = $user->id;
         }

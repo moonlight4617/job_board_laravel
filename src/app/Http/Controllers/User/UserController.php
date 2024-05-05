@@ -25,7 +25,6 @@ final class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -35,7 +34,7 @@ final class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -45,7 +44,7 @@ final class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -99,7 +98,7 @@ final class UserController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function show($id)
     {
@@ -114,7 +113,7 @@ final class UserController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function edit($id)
     {
@@ -129,9 +128,9 @@ final class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \App\Http\Requests\UploadImageRequest $request
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UploadImageRequest $request, $id)
     {
@@ -168,14 +167,14 @@ final class UserController extends Controller
         // タグを登録から外した場合
         $requestTags = $request->tag;
         $userTags = TagToUser::where('users_id', $id)->pluck('tags_id');
-        if ($requestTags && $userTags) {
+        if ($requestTags && $userTags->isNotEmpty()) {
             foreach ($userTags as $tag) {
-                if (! in_array($tag, $requestTags)) {
+                if (!in_array($tag, $requestTags)) {
                     $user->tags()->detach($tag);
                 }
             }
             foreach ($requestTags as $tag) {
-                if (! $userTags->contains($tag)) {
+                if (!$userTags->contains($tag)) {
                     $user->tags()->attach($tag);
                 }
             }
@@ -183,7 +182,7 @@ final class UserController extends Controller
             foreach ($requestTags as $tag) {
                 $user->tags()->attach($tag);
             }
-        } elseif ($userTags) {
+        } elseif ($userTags->isNotEmpty()) {
             $user->tags()->detach();
         }
 
@@ -219,7 +218,7 @@ final class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
@@ -239,7 +238,6 @@ final class UserController extends Controller
 
         // 新たにUserPicturesに画像登録
         UserPictures::create(['users_id' => Auth::id(), 'filename' => $portfolioToStore]);
-
     }
 
     public function pictureDestroy(Request $request)
@@ -251,7 +249,6 @@ final class UserController extends Controller
             Storage::delete($filePath);
         }
         $picture->delete();
-
     }
 
     public function test()

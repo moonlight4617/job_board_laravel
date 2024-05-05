@@ -27,7 +27,7 @@ final class JobsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -39,7 +39,7 @@ final class JobsController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -53,6 +53,8 @@ final class JobsController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * 
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(UploadImageRequest $request)
     {
@@ -73,7 +75,7 @@ final class JobsController extends Controller
         if ($tags) {
             $correctTags = Tag::where('subject', 1)->pluck('id');
             foreach ($tags as $tag) {
-                if (! $correctTags->contains($tag)) {
+                if (!$correctTags->contains($tag)) {
                     return redirect()
                         ->route('company.jobs.create')
                         ->withErrors('特徴タグで不正な値が選択されています')
@@ -83,7 +85,7 @@ final class JobsController extends Controller
         }
         // 雇用形態のバリデーション
         $emp_status = intval($request->emp_status);
-        if (! EmpStatus::hasValue($emp_status)) {
+        if (!EmpStatus::hasValue($emp_status)) {
             return redirect()
                 ->route('company.jobs.create')
                 ->withErrors('雇用形態で不正な値が選択されています')
@@ -92,9 +94,9 @@ final class JobsController extends Controller
         // 勤務地のバリデーション
         $prefectures = $request->prefecture;
         if ($prefectures) {
-            $correctPrefectures = Prefecture::all()->pluck('id');
+            $correctPrefectures = Prefecture::pluck('id');
             foreach ($prefectures as $prefecture) {
-                if (! $correctPrefectures->contains($prefecture)) {
+                if (!$correctPrefectures->contains($prefecture)) {
                     return redirect()
                         ->route('company.jobs.create')
                         ->withErrors('勤務地で不正な値が選択されています')
@@ -105,9 +107,9 @@ final class JobsController extends Controller
         // 職種のバリデーション
         $occupations = $request->occupation;
         if ($occupations) {
-            $correctOccupations = Occupation::all()->pluck('id');
+            $correctOccupations = Occupation::pluck('id');
             foreach ($occupations as $occupation) {
-                if (! $correctOccupations->contains($occupation)) {
+                if (!$correctOccupations->contains($occupation)) {
                     return redirect()
                         ->route('company.jobs.create')
                         ->withErrors('職種で不正な値が選択されています')
@@ -190,7 +192,7 @@ final class JobsController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function show($id)
     {
@@ -203,7 +205,7 @@ final class JobsController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function edit($id)
     {
@@ -221,6 +223,7 @@ final class JobsController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UploadImageRequest $request, $id)
     {
@@ -241,7 +244,7 @@ final class JobsController extends Controller
         if ($tags) {
             $correctTags = Tag::where('subject', 1)->pluck('id');
             foreach ($tags as $tag) {
-                if (! $correctTags->contains($tag)) {
+                if (!$correctTags->contains($tag)) {
                     return redirect()
                         ->route('company.jobs.create')
                         ->withErrors('特徴タグで不正な値が選択されています')
@@ -251,7 +254,7 @@ final class JobsController extends Controller
         }
         // 雇用形態のバリデーション
         $emp_status = intval($request->emp_status);
-        if (! EmpStatus::hasValue($emp_status)) {
+        if (!EmpStatus::hasValue($emp_status)) {
             return redirect()
                 ->route('company.jobs.create')
                 ->withErrors('雇用形態で不正な値が選択されています')
@@ -262,7 +265,7 @@ final class JobsController extends Controller
         if ($prefectures) {
             $correctPrefectures = Prefecture::all()->pluck('id');
             foreach ($prefectures as $prefecture) {
-                if (! $correctPrefectures->contains($prefecture)) {
+                if (!$correctPrefectures->contains($prefecture)) {
                     return redirect()
                         ->route('company.jobs.edit', ['job' => $id])
                         ->withErrors('勤務地で不正な値が選択されています')
@@ -275,7 +278,7 @@ final class JobsController extends Controller
         if ($occupations) {
             $correctOccupations = Occupation::all()->pluck('id');
             foreach ($occupations as $occupation) {
-                if (! $correctOccupations->contains($occupation)) {
+                if (!$correctOccupations->contains($occupation)) {
                     return redirect()
                         ->route('company.jobs.create')
                         ->withErrors('職種で不正な値が選択されています')
@@ -300,12 +303,12 @@ final class JobsController extends Controller
         $jobTags = $job->Tags->pluck('id');
         if ($tags && $jobTags) {
             foreach ($tags as $tag) {
-                if (! $jobTags->contains($tag)) {
+                if (!$jobTags->contains($tag)) {
                     $job->Tags()->attach($tag);
                 }
             }
             foreach ($jobTags as $jobTag) {
-                if (! in_array($jobTag, $tags)) {
+                if (!in_array($jobTag, $tags)) {
                     $job->Tags()->detach($jobTag);
                 }
             }
@@ -321,12 +324,12 @@ final class JobsController extends Controller
         $jobPrefs = $job->Prefectures->pluck('id');
         if ($prefectures && $jobPrefs) {
             foreach ($jobPrefs as $jobPref) {
-                if (! in_array($jobPref, $prefectures)) {
+                if (!in_array($jobPref, $prefectures)) {
                     $job->Prefectures()->detach($jobPref);
                 }
             }
             foreach ($prefectures as $pref) {
-                if (! $jobPrefs->contains($pref)) {
+                if (!$jobPrefs->contains($pref)) {
                     $job->Prefectures()->attach($pref);
                 }
             }
@@ -342,12 +345,12 @@ final class JobsController extends Controller
         $jobOccus = $job->occupations->pluck('id');
         if ($occupations && $jobOccus) {
             foreach ($jobOccus as $jobOccu) {
-                if (! in_array($jobOccu, $occupations)) {
+                if (!in_array($jobOccu, $occupations)) {
                     $job->occupations()->detach($jobOccu);
                 }
             }
             foreach ($occupations as $occu) {
-                if (! $jobOccus->contains($occu)) {
+                if (!$jobOccus->contains($occu)) {
                     $job->occupations()->attach($occu);
                 }
             }
@@ -371,7 +374,7 @@ final class JobsController extends Controller
             $fileNameToStore1 = $fileName . '.'  . $extension;
             $resizedImage1 = InterventionImage::make($imageFile1)->orientate()->fit(1920, 1080)->encode();
             $storedImage1 = Storage::put('public/jobs/' . $fileNameToStore1, $resizedImage1);
-            if (! $storedImage1) {
+            if (!$storedImage1) {
                 return redirect()->route('company.jobs.show', compact('job'))->with(['message' => '画像更新失敗', 'status' => 'info']);
             }
             $job->image1 = $fileNameToStore1;
@@ -412,7 +415,7 @@ final class JobsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
