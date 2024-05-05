@@ -12,6 +12,10 @@ final class AppliedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $job;
+
+    public $pages;
+
     /**
      * Create a new message instance.
      *

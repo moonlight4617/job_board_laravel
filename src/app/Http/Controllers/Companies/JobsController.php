@@ -94,7 +94,7 @@ final class JobsController extends Controller
         // 勤務地のバリデーション
         $prefectures = $request->prefecture;
         if ($prefectures) {
-            $correctPrefectures = Prefecture::all()->pluck('id');
+            $correctPrefectures = Prefecture::pluck('id');
             foreach ($prefectures as $prefecture) {
                 if (!$correctPrefectures->contains($prefecture)) {
                     return redirect()
@@ -107,7 +107,7 @@ final class JobsController extends Controller
         // 職種のバリデーション
         $occupations = $request->occupation;
         if ($occupations) {
-            $correctOccupations = Occupation::all()->pluck('id');
+            $correctOccupations = Occupation::pluck('id');
             foreach ($occupations as $occupation) {
                 if (!$correctOccupations->contains($occupation)) {
                     return redirect()

@@ -20,7 +20,7 @@ final class EnsureJobsCompany
     public function handle(Request $request, Closure $next)
     {
         $id = $request->route()->parameter('job'); //jobのid取得
-        if (! is_null($id)) {
+        if (!is_null($id)) {
             $jobCompanyId = Jobs::findOrFail($id)->companies->id;
             $jobId = (int) $jobCompanyId; // キャスト 文字列→数値に型変換
             $companyId = Auth::id();
@@ -30,5 +30,6 @@ final class EnsureJobsCompany
 
             return $next($request);
         }
+        return $next($request);
     }
 }

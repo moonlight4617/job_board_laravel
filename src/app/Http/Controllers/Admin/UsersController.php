@@ -195,7 +195,7 @@ final class UsersController extends Controller
         // タグを登録から外した場合
         $requestTags = $request->tag;
         $userTags = TagToUser::where('users_id', $id)->pluck('tags_id');
-        if ($requestTags && $userTags) {
+        if ($requestTags && $userTags->isNotEmpty()) {
             foreach ($userTags as $tag) {
                 // if (!$requestTags->contains($tag)) {
                 if (!in_array($tag, $requestTags)) {
@@ -211,7 +211,7 @@ final class UsersController extends Controller
             foreach ($requestTags as $tag) {
                 $user->tags()->attach($tag);
             }
-        } elseif ($userTags) {
+        } elseif ($userTags->isNotEmpty()) {
             $user->tags()->detach();
         }
 

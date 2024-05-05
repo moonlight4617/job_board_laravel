@@ -27,6 +27,5 @@ sql:
 	docker compose exec db bash -c 'mysql -u $$MYSQL_USER -p$$MYSQL_PASSWORD $$MYSQL_DATABASE'
 pint:
 	docker compose exec app composer pint
-
 larastan:
 	docker compose exec app ./vendor/bin/phpstan analyse

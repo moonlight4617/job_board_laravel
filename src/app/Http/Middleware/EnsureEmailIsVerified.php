@@ -21,11 +21,12 @@ final class EnsureEmailIsVerified
     public function handle($request, Closure $next, $redirectToRoute = null)
     {
         if (
-            ! $request->user() ||
+            !$request->user() ||
             ($request->user() instanceof MustVerifyEmail &&
-              ! $request->user()->hasVerifiedEmail())
+                !$request->user()->hasVerifiedEmail())
         ) {
 
+            $path = '';
             if (get_class($request->user()) === 'App\Models\User') {
                 $path = 'user.';
             } elseif (get_class($request->user()) === 'App\Models\Companies') {
@@ -34,8 +35,8 @@ final class EnsureEmailIsVerified
             }
 
             return $request->expectsJson()
-              ? abort(403, 'Your email address is not verified.')
-              : Redirect::guest(URL::route($redirectToRoute ?: $path . 'verification.notice'));
+                ? abort(403, 'Your email address is not verified.')
+                : Redirect::guest(URL::route($redirectToRoute ?: $path . 'verification.notice'));
         }
 
         return $next($request);

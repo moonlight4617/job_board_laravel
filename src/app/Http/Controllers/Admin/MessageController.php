@@ -56,7 +56,7 @@ final class MessageController extends Controller
     {
         // $test = User::where('id', 90)->count();
         // dd($test);
-        dd($request);
+        // dd($request);
         foreach ($request->messages as $messageId) {
             Message::findOrFail($messageId)->delete();
         }

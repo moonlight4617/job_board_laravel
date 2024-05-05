@@ -25,7 +25,6 @@ final class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -168,7 +167,7 @@ final class UserController extends Controller
         // タグを登録から外した場合
         $requestTags = $request->tag;
         $userTags = TagToUser::where('users_id', $id)->pluck('tags_id');
-        if ($requestTags && $userTags) {
+        if ($requestTags && $userTags->isNotEmpty()) {
             foreach ($userTags as $tag) {
                 if (!in_array($tag, $requestTags)) {
                     $user->tags()->detach($tag);
@@ -183,7 +182,7 @@ final class UserController extends Controller
             foreach ($requestTags as $tag) {
                 $user->tags()->attach($tag);
             }
-        } elseif ($userTags) {
+        } elseif ($userTags->isNotEmpty()) {
             $user->tags()->detach();
         }
 
