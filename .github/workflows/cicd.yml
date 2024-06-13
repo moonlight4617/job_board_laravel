@@ -1,10 +1,15 @@
-name: Laravel Testing
+name: CI/CD for Laravel and AWS Fargate
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
+    branches:
+      - main
 
 jobs:
-  laravel-testing:
+  ci:
     runs-on: ubuntu-latest
 
     steps:
@@ -52,3 +57,37 @@ jobs:
 
       - name: Laravel PHPUnit Testing
         run: docker-compose exec -T app php artisan test
+
+  # deploy:
+  #   if: github.ref == 'refs/heads/main'
+  #   needs: ci
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
+
+  #     - name: Log in to Amazon ECR
+  #       id: login-ecr
+  #       uses: aws-actions/amazon-ecr-login@v1
+
+  #     - name: Build, tag, and push Docker image
+  #       env:
+  #         ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+  #         ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+  #         IMAGE_TAG: ${{ github.sha }}
+  #       run: |
+  #         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+  #         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+  #     - name: Deploy to Fargate
+  #       env:
+  #         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         AWS_REGION: ${{ secrets.AWS_REGION }}
+  #         ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+  #         ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+  #         IMAGE_TAG: ${{ github.sha }}
+  #       run: |
+  #         aws ecs update-service --cluster your-cluster-name --service your-service-name --force-new-deployment \
+  #         --region $AWS_REGION
