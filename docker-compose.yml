@@ -1,13 +1,17 @@
 version: "3.9"
 services:
   app:
-    build: ./infra/php
+    build:
+      context: .
+      dockerfile: infra/php/Dockerfile
     volumes:
       - ./src:/data
 
   web:
-    build: ./infra/nginx
-    # image: nginx:1.20-alpine
+    build:
+      context: .
+      dockerfile: infra/nginx/Dockerfile
+      # image: nginx:1.20-alpine
     ports:
       - 8080:80
     volumes:
