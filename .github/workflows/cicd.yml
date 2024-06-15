@@ -8,9 +8,9 @@ on:
     branches:
       - main
 
-env:
-  AWS_REGION: ap-northeast-1
-  IMAGE_TAG: ${{ github.sha }}
+# env:
+#   AWS_REGION: ap-northeast-1
+#   IMAGE_TAG: ${{ github.sha }}
 
 jobs:
   ci:
@@ -85,13 +85,13 @@ jobs:
         with:
           # aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
           # aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
-          aws-region: $AWS_REGION
+          aws-region: ap-northeast-1
           role-to-assume: "arn:aws:iam::502674413540:role/github-actions-ecr-push-jobpair-role"
           role-duration-seconds: 1800
 
       # github actionsで使用される環境変数を追加
-      - name: Set env vars for prod
-        run: echo "ENV_NAME=prod" >> $GITHUB_ENV
+      # - name: Set env vars for prod
+      #   run: echo "ENV_NAME=prod" >> $GITHUB_ENV
 
       - name: Create & Start Docker Containers
         run: docker-compose up -d --build app web
@@ -116,6 +116,7 @@ jobs:
           DOCKER_BUILDKIT: 1
           ECR_REGISTRY: ${{ steps.amazon-ecr-login.outputs.registry }}
           ECR_REPOSITORY: jobpair-prod-nginx
+          IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build \
             --cache-from=$ECR_REGISTRY/$ECR_REPOSITORY:latest --build-arg BUILDKIT_INLINE_CACHE=1 . \
@@ -130,6 +131,7 @@ jobs:
           DOCKER_BUILDKIT: 1
           ECR_REGISTRY: ${{ steps.amazon-ecr-login.outputs.registry }}
           ECR_REPOSITORY: jobpair-prod-php
+          IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build \
             --cache-from=$ECR_REGISTRY/$ECR_REPOSITORY:latest --build-arg BUILDKIT_INLINE_CACHE=1 . \
