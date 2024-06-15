@@ -6,7 +6,8 @@ services:
       - ./src:/data
 
   web:
-    image: nginx:1.20-alpine
+    build: ./infra/nginx
+    # image: nginx:1.20-alpine
     ports:
       - 8080:80
     volumes:

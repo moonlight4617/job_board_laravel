@@ -13,4 +13,6 @@ RUN apt-get update && \
 
 COPY ./php.ini /usr/local/etc/php/php.ini
 
+COPY --chown=www-data:www-data ./src /data
+
 WORKDIR /data
