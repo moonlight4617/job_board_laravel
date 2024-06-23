@@ -153,7 +153,7 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: ${{ env.ECS_TASK_DEFINITION }}
-          container-name: nginx-container
+          container-name: nginx
           image: ${{ steps.build-nginx-image.outputs.nginx-image }}
 
       - name: Fill in the new php image ID in the Amazon ECS task definition
@@ -161,7 +161,7 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: ${{ env.ECS_TASK_DEFINITION }}
-          container-name: php-container
+          container-name: php
           image: ${{ steps.build-php-image.outputs.php-image }}
 
       - name: Deploy Amazon ECS nginx task definition
