@@ -89,7 +89,7 @@ jobs:
           # aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
           # aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-1
-          role-to-assume: "arn:aws:iam::502674413540:role/github-actions-ecr-push-jobpair-role"
+          role-to-assume: "arn:aws:iam::502674413540:role/github-actions-ecr-push-jobpair-role-and-register-task-def"
           role-duration-seconds: 1800
 
       # github actionsで使用される環境変数を追加
